@@ -16,7 +16,7 @@ function getroutes() {
     awk -F',' '{
         split($6, x, "@"); 
         print $4" "x[1]" "x[2]
-    }' | sort | grep -E "admin/(cache|disclaimers|email|entity)"
+    }' | sort | grep -E "admin/"
 }
 
 # Combine the usage data with the admin routes
@@ -107,13 +107,24 @@ xargs rg 'public function' --heading -l > controllers_with_remaining_methods.txt
 grep -v -F -f controllers_with_remaining_methods.txt controllers_with_deleted_methods.txt | \
 xargs rm
 
+# Some controllers have a __construct function. If that
+# is the only function left, we should delete the 
+# controller too.
+./controllerswithonlyconstruct.sh
+
 echo "Deleting unused methods from the controllers"
 ./deleteunusedmethods.sh
 
-echo "Deleting unused views"
+echo "Deleting unused views: First pass"
 ./findunusedviews.sh
+
+echo "Deleting unused views: Second pass"
+./findunusedviews.sh
+
+echo "Deleting Route::resource for which the controller no longer exists"
+./deleterouteresource.sh
 
 echo "Unused route grep expressions output to:"
 echo "unusedref.txt"
 echo "run ./findreferences.sh to check"
-# ./findreferences.sh
+./findreferences.sh

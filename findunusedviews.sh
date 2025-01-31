@@ -4,16 +4,16 @@ CONTROLLERS_PATH="$WEBAPP_PATH/app/Http/Controllers"
 
 find "$VIEW_PATH" -type f | \
 sed "s|$WEBAPP_PATH/resources/views/||g" | \
-sed 's|.blade.php||g' | grep -v "partials" - > views_slash.txt 
+sed 's|.blade.php||g' > views_slash.txt 
 
 find "$VIEW_PATH" -type f | \
 sed "s|$WEBAPP_PATH/resources/views/||g" | \
 sed 's|.blade.php||g' | \
-sed 's|/|.|g' | grep -v "partials" - > views_dot.txt 
+sed 's|/|.|g' > views_dot.txt 
 
 find "$VIEW_PATH" -type f | \
 sed "s|$WEBAPP_PATH/resources/views/||g" | \
-sed 's|.blade.php||g' | grep -v "partials" - > views_slash.txt 
+sed 's|.blade.php||g' > views_slash.txt 
 
 # Find views that are actually used
 cat views_slash.txt views_dot.txt | while read -r path; do
